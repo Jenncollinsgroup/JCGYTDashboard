@@ -1,0 +1,1346 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Mulish:wght@400;500;600;700&family=Alex+Brush&display=swap');
+
+  :root{
+    --bg:#FFFFFF;
+    --panel:#FFFFFF;
+    --panel-2:#FBF7F1;
+    --line:#EBE1D2;
+    --ink:#1A1A1F;
+    --ink-dim:#6E6A63;
+    --navy:#12395C;
+    --navy-2:#1C4C79;
+    --tan:#E8CDAF;
+    --tan-deep:#B98A55;
+    --blush:#F6C1C1;
+    --slate:#535D6A;
+    --rose:#E69A9A;
+    --rose-deep:#C9666B;
+    --font-display:'Playfair Display',serif;
+    --font-body:'Mulish',sans-serif;
+    --font-script:'Alex Brush',cursive;
+  }
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion: reduce){
+    .yt-dash *{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}
+  }
+  .yt-dash{
+    background:
+      radial-gradient(ellipse 700px 380px at 10% -8%, rgba(230,154,154,.08), transparent 60%),
+      radial-gradient(ellipse 600px 380px at 94% 4%, rgba(18,57,92,.05), transparent 60%),
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--font-body);
+    min-height:100vh;
+    padding:0 0 60px 0;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+  .yt-dash a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px;}
+
+  /* Ticker */
+  .ticker{
+    background:rgba(255,255,255,.9);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:12px 22px;
+    display:flex;align-items:center;gap:10px;
+    font-family:var(--font-body);font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;
+    color:var(--ink-dim);position:sticky;top:0;z-index:30;
+  }
+  .live-pill{
+    display:flex;align-items:center;gap:7px;background:rgba(230,154,154,.14);
+    border:1px solid rgba(230,154,154,.4);padding:4px 10px 4px 8px;border-radius:20px;
+    color:var(--rose-deep);
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--rose-deep);flex-shrink:0;animation:pulse 1.8s infinite;}
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(201,102,107,.45);}
+    70%{box-shadow:0 0 0 7px rgba(201,102,107,0);}
+    100%{box-shadow:0 0 0 0 rgba(201,102,107,0);}
+  }
+  .ticker .sep{color:var(--line);}
+  .settings-btn{
+    margin-left:auto;background:var(--panel-2);border:1px solid var(--line);color:var(--navy);
+    padding:7px 14px;border-radius:20px;font-family:var(--font-body);font-size:12px;font-weight:700;
+    cursor:pointer;display:flex;align-items:center;gap:6px;transition:.15s ease;text-transform:none;letter-spacing:0;
+  }
+  .settings-btn:hover{border-color:var(--navy);transform:translateY(-1px);}
+  .settings-btn:active{transform:translateY(0) scale(.97);}
+
+  /* Hero */
+  .hero{padding:52px 0 30px 0;position:relative;}
+  .avatar-row{display:flex;align-items:center;gap:16px;margin-bottom:16px;}
+  .avatar{
+    width:58px;height:58px;border-radius:50%;flex-shrink:0;
+    background:var(--navy);
+    display:flex;align-items:center;justify-content:center;
+    font-family:var(--font-script);font-weight:400;font-size:32px;color:#fff;
+    box-shadow:0 10px 24px rgba(18,57,92,.22);
+  }
+  .eyebrow{font-family:var(--font-body);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--rose-deep);margin-bottom:5px;font-weight:700;}
+  .hero h1{font-family:var(--font-display);font-weight:700;font-size:clamp(28px,4vw,40px);margin:0;letter-spacing:-.01em;color:var(--navy);}
+  .hero p.sub{color:var(--ink-dim);margin:14px 0 0 0;font-size:14.5px;max-width:540px;line-height:1.6;}
+  .hero p.tagline{
+    font-family:var(--font-display);font-style:italic;font-weight:500;color:var(--tan-deep);
+    font-size:16px;margin:10px 0 0 0;
+  }
+
+  .stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:30px;}
+  .stat-row-4{grid-template-columns:repeat(4,1fr) !important;}
+  @media (max-width:760px){ .stat-row-4{grid-template-columns:repeat(2,1fr) !important;} }
+
+  .drop-zone{
+    display:flex;align-items:center;gap:14px;margin-top:22px;
+    border:2px dashed var(--line);border-radius:14px;padding:18px 20px;
+    cursor:pointer;transition:.15s ease;background:var(--panel-2);
+  }
+  .drop-zone:hover, .drop-zone.dragover{border-color:var(--rose-deep);background:rgba(230,154,154,.06);}
+  .drop-zone .dz-icon{font-size:28px;flex-shrink:0;}
+  .drop-zone .dz-text{display:flex;flex-direction:column;gap:2px;}
+  .drop-zone .dz-text b{font-size:14px;color:var(--navy);font-family:var(--font-body);}
+  .drop-zone .dz-text span{font-size:12.5px;color:var(--ink-dim);}
+  .drop-zone .dz-status{margin-left:auto;font-size:12.5px;font-weight:700;flex-shrink:0;}
+  .drop-zone .dz-status.working{color:var(--tan-deep);}
+  .drop-zone .dz-status.done{color:var(--navy);}
+  .drop-zone .dz-status.err{color:var(--rose-deep);}
+  @media (max-width:600px){ .drop-zone{flex-wrap:wrap;} .drop-zone .dz-status{margin-left:0;} }
+  .stat{
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;
+    transition:.2s ease;position:relative;overflow:hidden;
+    box-shadow:0 1px 2px rgba(20,20,30,.03);
+  }
+  .stat:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(20,20,30,.07);border-color:var(--tan);}
+  .stat .icon{font-size:15px;opacity:.75;margin-bottom:8px;display:block;}
+  .stat .label{font-family:var(--font-body);font-size:10px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-dim);font-weight:700;}
+  .stat .value{font-family:var(--font-display);font-size:27px;margin-top:6px;font-weight:700;color:var(--navy);}
+  .stat .value.slate{color:var(--slate);}
+  .stat .value.tan{color:var(--tan-deep);}
+  .stat .value.rose{color:var(--rose-deep);}
+  .delta{display:inline-block;margin-top:7px;font-family:var(--font-body);font-size:11px;font-weight:800;padding:2px 8px;border-radius:10px;letter-spacing:.01em;}
+  .delta.up{color:var(--navy);background:rgba(18,57,92,.08);}
+  .delta.down{color:var(--rose-deep);background:rgba(230,154,154,.16);}
+  .delta.flat{color:var(--ink-dim);background:var(--panel-2);}
+  .paste-zone{
+    border:2px dashed var(--line);border-radius:12px;padding:18px 14px;text-align:center;
+    cursor:pointer;transition:.15s ease;background:var(--panel-2);margin-bottom:14px;
+  }
+  .paste-zone:hover, .paste-zone.dragover{border-color:var(--rose-deep);background:rgba(230,154,154,.06);}
+  .paste-zone .pz-icon{font-size:22px;display:block;margin-bottom:6px;}
+  .paste-zone .pz-label{font-size:12px;color:var(--ink-dim);font-weight:600;line-height:1.5;}
+  .paste-zone .pz-label b{color:var(--navy);}
+  .paste-zone img{max-width:100%;max-height:90px;border-radius:8px;margin-bottom:8px;box-shadow:0 4px 12px rgba(20,20,30,.12);}
+  .paste-zone .pz-status{font-size:11.5px;font-weight:700;margin-top:6px;}
+  .paste-zone .pz-status.reading{color:var(--tan-deep);}
+  .paste-zone .pz-status.done{color:var(--navy);}
+  .paste-zone .pz-status.err{color:var(--rose-deep);}
+  .parse-preview{font-size:11px;margin-top:5px;font-weight:700;min-height:14px;}
+  .parse-preview.ok{color:var(--navy);}
+  .parse-preview.bad{color:var(--rose-deep);}
+
+  /* Filmstrip divider */
+  .filmstrip{height:18px;margin:8px 0 0 0;background:
+    repeating-linear-gradient(90deg, var(--tan) 0 10px, transparent 10px 20px);
+    -webkit-mask-image: radial-gradient(circle 3.5px at 5px 9px, transparent 4px, black 4.5px);
+    -webkit-mask-repeat: repeat-x; -webkit-mask-size: 20px 18px;
+    mask-image: radial-gradient(circle 3.5px at 5px 9px, transparent 4px, black 4.5px);
+    mask-repeat: repeat-x; mask-size: 20px 18px;
+    opacity:.6;
+  }
+
+  .section{padding:38px 0;}
+  .section-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+  .section-head h2{font-family:var(--font-display);font-size:21px;font-weight:700;margin:0;color:var(--navy);}
+  .section-head .hint{font-size:12.5px;color:var(--ink-dim);}
+  .add-btn{
+    background:var(--navy);border:none;color:#fff;
+    padding:9px 16px;border-radius:20px;font-size:13px;font-weight:700;cursor:pointer;
+    transition:.15s ease;box-shadow:0 8px 20px rgba(18,57,92,.2);
+  }
+  .add-btn:hover{background:var(--navy-2);transform:translateY(-1px);box-shadow:0 10px 24px rgba(18,57,92,.28);}
+  .add-btn:active{transform:translateY(0) scale(.96);}
+
+  /* Video cards */
+  .videos{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:16px;}
+  .vcard{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;
+    display:flex;flex-direction:column;transition:.25s ease;position:relative;
+    box-shadow:0 1px 2px rgba(20,20,30,.03);
+  }
+  .vcard::before{
+    content:'';position:absolute;inset:0;border-radius:16px;padding:1.5px;
+    background:linear-gradient(135deg,var(--rose),var(--tan),var(--navy));
+    -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    -webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.25s ease;pointer-events:none;
+  }
+  .vcard:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(20,20,30,.1);}
+  .vcard:hover::before{opacity:1;}
+  .vcard img{width:100%;aspect-ratio:16/9;object-fit:cover;display:block;background:var(--panel-2);}
+  .vcard-body{padding:13px 14px 15px;flex:1;display:flex;flex-direction:column;gap:9px;}
+  .vcard-title{font-size:13px;line-height:1.4;font-weight:700;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.7em;color:var(--ink);}
+  .vmetrics{display:flex;gap:12px;font-family:var(--font-body);font-size:12px;color:var(--ink-dim);flex-wrap:wrap;font-weight:600;}
+  .promo-badge{
+    display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;
+    padding:3px 9px;border-radius:12px;margin-top:2px;width:fit-content;
+  }
+  .promo-badge.active{color:var(--navy);background:rgba(18,57,92,.09);}
+  .promo-badge.ended{color:var(--ink-dim);background:var(--panel-2);}
+  .promo-badge.none{color:var(--rose-deep);background:rgba(230,154,154,.14);}
+  .vmetrics b{color:var(--navy);font-weight:800;}
+  .manual-row{display:flex;gap:8px;margin-top:auto;padding-top:9px;border-top:1px dashed var(--line);}
+  .manual-field{flex:1;}
+  .manual-field label{display:block;font-family:var(--font-body);font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:4px;font-weight:700;}
+  .manual-field input{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:6px;
+    color:var(--ink);font-family:var(--font-body);font-size:12px;padding:6px 7px;transition:.15s;
+  }
+  .manual-field input:focus{outline:none;border-color:var(--rose-deep);box-shadow:0 0 0 3px rgba(230,154,154,.2);}
+
+  /* Promotions */
+  .promo-list{display:flex;flex-direction:column;gap:10px;}
+  .promo-row{
+    display:grid;grid-template-columns:1.6fr 1fr 0.85fr 0.7fr 0.85fr 0.6fr 0.6fr 0.9fr 28px;gap:8px;align-items:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+    transition:.2s ease;box-shadow:0 1px 2px rgba(20,20,30,.03);
+  }
+  .promo-row:hover{border-color:var(--rose);box-shadow:0 6px 16px rgba(20,20,30,.06);}
+  .row-in{animation:rowIn .35s ease;}
+  @keyframes rowIn{from{opacity:0;transform:translateY(-8px) scale(.98);}to{opacity:1;transform:none;}}
+  .promo-row input, .promo-row select{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:7px;
+    color:var(--ink);font-family:var(--font-body);font-size:12.5px;padding:7px 9px;transition:.15s;
+  }
+  .promo-row input:focus, .promo-row select:focus{outline:none;border-color:var(--rose-deep);box-shadow:0 0 0 3px rgba(230,154,154,.2);}
+  .promo-row .num{font-variant-numeric:tabular-nums;}
+  .del-btn{
+    background:none;border:none;color:var(--ink-dim);cursor:pointer;font-size:17px;line-height:1;
+    padding:5px;border-radius:6px;transition:.15s;
+  }
+  .del-btn:hover{color:var(--rose-deep);background:rgba(230,154,154,.12);}
+  .cpr{font-variant-numeric:tabular-nums;color:var(--navy);font-weight:800;font-size:12.5px;text-align:right;padding-right:4px;}
+  .promo-head-row{
+    display:grid;grid-template-columns:1.6fr 1fr 0.85fr 0.7fr 0.85fr 0.6fr 0.6fr 0.9fr 28px;gap:8px;padding:0 12px 6px;
+    font-family:var(--font-body);font-size:10px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-dim);font-weight:700;
+  }
+  .empty-state{
+    text-align:center;padding:34px 20px;color:var(--ink-dim);background:var(--panel-2);
+    border:1px dashed var(--line);border-radius:14px;font-size:13px;
+  }
+  .empty-state .emoji{font-size:26px;display:block;margin-bottom:8px;}
+
+  .roi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:20px;}
+
+  /* Settings modal */
+  .modal-backdrop{
+    position:fixed;inset:0;background:rgba(18,57,92,.28);backdrop-filter:blur(3px);display:flex;
+    align-items:center;justify-content:center;z-index:100;padding:20px;animation:fadeIn .2s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+  .modal{
+    background:#fff;border:1px solid var(--line);border-radius:18px;
+    max-width:420px;width:100%;padding:28px;animation:modalIn .25s ease;
+    box-shadow:0 30px 80px rgba(18,57,92,.25);
+  }
+  @keyframes modalIn{from{opacity:0;transform:scale(.96) translateY(6px);}to{opacity:1;transform:none;}}
+  .modal h3{font-family:var(--font-display);margin:0 0 6px 0;font-size:20px;font-weight:700;color:var(--navy);}
+  .modal p{font-size:12.5px;color:var(--ink-dim);margin:0 0 20px 0;line-height:1.6;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-family:var(--font-body);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:6px;font-weight:700;}
+  .field input{
+    width:100%;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;
+    color:var(--ink);font-family:var(--font-body);font-size:13px;padding:10px 11px;transition:.15s;
+  }
+  .field input:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(18,57,92,.12);}
+  .modal-actions{display:flex;gap:10px;margin-top:22px;}
+  .btn-primary{
+    flex:1;background:var(--navy);color:#fff;border:none;border-radius:9px;
+    padding:11px 14px;font-family:var(--font-body);font-weight:700;font-size:13px;cursor:pointer;transition:.15s;
+  }
+  .btn-primary:hover{background:var(--navy-2);transform:translateY(-1px);}
+  .btn-primary:active{transform:scale(.97);}
+  .btn-secondary{
+    background:none;border:1px solid var(--line);color:var(--ink-dim);border-radius:9px;
+    padding:11px 14px;font-family:var(--font-body);font-size:13px;cursor:pointer;font-weight:600;
+  }
+  .error-box{
+    background:rgba(230,154,154,.14);border:1px solid var(--rose-deep);color:#9C3E43;
+    border-radius:8px;padding:12px 14px;font-size:12.5px;margin-top:12px;line-height:1.5;
+  }
+  .setup-cta{
+    background:var(--panel-2);border:1px dashed var(--line);border-radius:16px;padding:30px;text-align:center;margin-top:22px;
+  }
+  .setup-cta .emoji{font-size:30px;display:block;margin-bottom:10px;}
+  .setup-cta p{color:var(--ink-dim);font-size:13.5px;margin:0 0 16px 0;}
+  @media (max-width:680px){
+    .promo-row, .promo-head-row{grid-template-columns:1fr;gap:6px;}
+    .promo-head-row{display:none;}
+    .promo-row{padding:14px;}
+    .cpr{text-align:left;padding-top:4px;}
+  }
+</style>
+
+<div class="yt-dash" id="app">
+  <div class="ticker">
+    <span class="live-pill"><span class="dot"></span><span id="ticker-status">NOT CONNECTED</span></span>
+    <span class="sep">/</span>
+    <span id="ticker-time">—</span>
+    <button class="settings-btn" id="open-settings">⚙ Settings</button>
+  </div>
+
+  <div class="wrap">
+    <div class="hero">
+      <div class="avatar-row">
+        <div class="avatar" id="avatar-initial">jc</div>
+        <div>
+          <div class="eyebrow">Jenn Collins Group · Creator Dashboard</div>
+          <h1 id="channel-name">Your Channel</h1>
+        </div>
+      </div>
+      <p class="sub">Live channel pulse, per-video performance, and promotion ROI — refreshed every time you open this.</p>
+      <p class="tagline">Live your life in a home you love.</p>
+
+      <div class="drop-zone" id="xlsx-drop-zone" tabindex="0">
+        <span class="dz-icon">📊</span>
+        <div class="dz-text">
+          <b>Drag & drop your analytics spreadsheet here</b>
+          <span>or click to browse — updates Impressions, CTR, Watch Time, and Promotions automatically</span>
+        </div>
+        <input type="file" id="xlsx-file-input" accept=".xlsx,.xls" style="display:none;">
+        <div class="dz-status" id="dz-status"></div>
+      </div>
+
+      <div class="stat-row stat-row-4" id="stat-row">
+        <div class="stat"><span class="icon">👥</span><div class="label">Subscribers</div><div class="value" id="stat-subs">0</div><div id="delta-subs"></div></div>
+        <div class="stat"><span class="icon">👁</span><div class="label">Total Views</div><div class="value slate" id="stat-views">0</div><div id="delta-views"></div></div>
+        <div class="stat"><span class="icon">🎬</span><div class="label">Total Videos</div><div class="value tan" id="stat-videos">0</div><div id="delta-videos"></div></div>
+        <div class="stat"><span class="icon">⏱</span><div class="label">Avg Watch Time (30d)</div><div class="value" id="stat-avgwatch">—</div><div id="delta-avgwatch"></div></div>
+        <div class="stat"><span class="icon">🔎</span><div class="label">Impressions (30d)</div><div class="value slate" id="stat-impressions">—</div><div id="delta-impressions"></div></div>
+        <div class="stat"><span class="icon">🎯</span><div class="label">Click-Through Rate (30d)</div><div class="value tan" id="stat-ctr">—</div><div id="delta-ctr"></div></div>
+        <div class="stat"><span class="icon">📣</span><div class="label">Active Promos</div><div class="value rose" id="stat-promos">0</div><div id="delta-promos"></div></div>
+        <div class="stat"><span class="icon">💸</span><div class="label">Promo Spend (30d)</div><div class="value rose" id="stat-spend30">$0</div><div id="delta-spend30"></div></div>
+      </div>
+      <div class="section-head" style="margin-top:6px;">
+        <span class="hint" id="snapshot-hint">Drop your spreadsheet above to fill in everything on this page.</span>
+        <span class="hint" id="snapshot-updated" style="font-weight:700;color:var(--tan-deep);"></span>
+      </div>
+      <div id="hero-extra"></div>
+    </div>
+
+    <div class="filmstrip"></div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Promotions & Performance</h2>
+      </div>
+      <div class="roi-grid" id="roi-grid">
+        <div class="stat"><span class="icon">💸</span><div class="label">Total Spend</div><div class="value tan" id="roi-spend">$0</div></div>
+        <div class="stat"><span class="icon">🔎</span><div class="label">Total Impressions</div><div class="value slate" id="roi-impressions">0</div></div>
+        <div class="stat"><span class="icon">📈</span><div class="label">Total Views</div><div class="value" id="roi-views">0</div></div>
+        <div class="stat"><span class="icon">👥</span><div class="label">Subscribers Gained</div><div class="value rose" id="roi-subs">0</div></div>
+        <div class="stat"><span class="icon">⚖️</span><div class="label">Cost / Subscriber</div><div class="value" id="roi-cost-per-sub">—</div></div>
+      </div>
+      <div style="display:flex;background:var(--panel-2);border:1px solid var(--line);border-radius:20px;padding:3px;width:fit-content;margin:20px 0 16px;">
+        <button class="view-toggle-btn active" id="view-by-campaign" style="border:none;background:var(--navy);color:#fff;padding:6px 14px;border-radius:16px;font-size:12px;font-weight:700;cursor:pointer;">By Campaign</button>
+        <button class="view-toggle-btn" id="view-by-video" style="border:none;background:none;color:var(--ink-dim);padding:6px 14px;border-radius:16px;font-size:12px;font-weight:700;cursor:pointer;">By Video</button>
+      </div>
+      <div id="campaign-view">
+        <div class="promo-head-row">
+          <span>Video / campaign</span><span>Goal</span><span>Date</span><span>Cost</span><span>Impressions</span><span>Views</span><span>Subs</span><span style="text-align:right;">Cost / outcome</span><span></span>
+        </div>
+        <div class="promo-list" id="promo-body"></div>
+      </div>
+      <div id="video-view" style="display:none;">
+        <div class="promo-head-row" style="grid-template-columns:1.6fr 0.5fr 0.7fr 0.8fr 0.6fr 0.7fr 0.7fr 0.7fr 0.9fr;">
+          <span>Video</span><span>Promos</span><span>Cost</span><span>Total Views</span><span>Subs</span><span>Watch Time</span><span>Impress.</span><span>CTR</span><span style="text-align:right;">Cost / outcome</span>
+        </div>
+        <div class="promo-list" id="video-rollup-body"></div>
+      </div>
+    </div>
+
+    <div class="filmstrip" id="filmstrip-2" style="display:none;"></div>
+
+    <div class="section" id="videos-section" style="display:none;">
+      <div class="section-head">
+        <h2>Recent Videos</h2>
+        <span class="hint">Live from YouTube — your most recent uploads</span>
+      </div>
+      <div class="videos" id="videos-grid"></div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal-backdrop" id="modal-backdrop" style="display:none;">
+  <div class="modal">
+    <h3>Connect your channel</h3>
+    <p>Uses the public YouTube Data API v3. Get a free API key from Google Cloud Console (enable "YouTube Data API v3"), then paste your channel ID below. Both are stored only in your browser, never sent anywhere else.</p>
+    <div class="field">
+      <label>YouTube Data API Key</label>
+      <input type="text" id="input-api-key" placeholder="AIza...">
+    </div>
+    <div class="field">
+      <label>Channel ID or @handle</label>
+      <input type="text" id="input-channel-id" placeholder="UC... or @yourhandle">
+    </div>
+    <div id="modal-error"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="cancel-settings">Cancel</button>
+      <button class="btn-primary" id="save-settings">Connect</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+(function(){
+  const $ = (id) => document.getElementById(id);
+  let promos = [];
+  let creds = { apiKey: '', channelId: '' };
+  let justAddedIdx = null;
+
+  function fmt(n){
+    n = Number(n)||0;
+    if(n>=1000000) return (n/1000000).toFixed(1)+'M';
+    if(n>=1000) return (n/1000).toFixed(1)+'K';
+    return String(Math.round(n));
+  }
+  function money(n){ n = Number(n)||0; return '$'+n.toLocaleString(undefined,{maximumFractionDigits:2}); }
+
+  function deltaMarkup(current, previous){
+    current = Number(current); previous = Number(previous);
+    if(previous===null || previous===undefined || isNaN(previous) || isNaN(current)){
+      return '<span class="delta flat">—</span>';
+    }
+    if(previous===0){
+      return current>0 ? '<span class="delta up">▲ new</span>' : '<span class="delta flat">—</span>';
+    }
+    const pct = ((current-previous)/Math.abs(previous))*100;
+    if(Math.abs(pct) < 0.05) return '<span class="delta flat">– flat</span>';
+    const dir = pct>0 ? 'up' : 'down';
+    const arrow = pct>0 ? '▲' : '▼';
+    return `<span class="delta ${dir}">${arrow} ${Math.abs(pct).toFixed(1)}%</span>`;
+  }
+  function parseTimeToSeconds(str){
+    if(!str) return null;
+    const s = String(str).trim().toLowerCase();
+    if(!s) return null;
+    // Plain "m:ss" or "h:mm:ss"
+    if(/^\d{1,3}:\d{1,2}(:\d{1,2})?$/.test(s)){
+      const parts = s.split(':').map(Number);
+      if(parts.length===2) return parts[0]*60 + parts[1];
+      if(parts.length===3) return parts[0]*3600 + parts[1]*60 + parts[2];
+    }
+    // "2m 17s", "2 min 17 sec", "2m17s"
+    const mMatch = s.match(/(\d+(?:\.\d+)?)\s*m(?:in)?/);
+    const sMatch = s.match(/(\d+(?:\.\d+)?)\s*s(?:ec)?/);
+    if(mMatch || sMatch){
+      return (mMatch ? parseFloat(mMatch[1])*60 : 0) + (sMatch ? parseFloat(sMatch[1]) : 0);
+    }
+    // Plain number = seconds
+    if(/^\d+(\.\d+)?$/.test(s)) return parseFloat(s);
+    return null;
+  }
+  function parseNumberLoose(str){
+    if(str === null || str === undefined || str === '') return NaN;
+    const cleaned = String(str).replace(/[^0-9.\-]/g, '');
+    if(cleaned === '') return NaN;
+    return parseFloat(cleaned);
+  }
+  function formatSecondsToTime(sec){
+    if(sec===null || sec===undefined || isNaN(sec)) return '—';
+    sec = Math.round(sec);
+    const m = Math.floor(sec/60), s = sec%60;
+    return m + ':' + String(s).padStart(2,'0');
+  }
+  function relativeTime(isoStr){
+    if(!isoStr) return '';
+    const then = new Date(isoStr);
+    if(isNaN(then)) return '';
+    const diffMs = Date.now() - then.getTime();
+    const diffDays = Math.floor(diffMs / (1000*60*60*24));
+    let when;
+    if(diffDays <= 0){
+      const diffHrs = Math.floor(diffMs / (1000*60*60));
+      when = diffHrs <= 0 ? 'just now' : (diffHrs === 1 ? '1 hour ago' : diffHrs + ' hours ago');
+    }else if(diffDays === 1){
+      when = 'yesterday';
+    }else{
+      when = diffDays + ' days ago';
+    }
+    const dateStr = then.toLocaleDateString(undefined, { month:'short', day:'numeric' });
+    return `Snapshot updated ${when} (${dateStr})`;
+  }
+
+  function fileToBase64(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function setupPasteZone(zoneId, fileInputId, statusId, targetPrefix){
+    const zone = $(zoneId);
+    const fileInput = $(fileInputId);
+    const status = $(statusId);
+
+    async function handleFile(file){
+      if(!file || !file.type.startsWith('image/')) return;
+      const existingImg = zone.querySelector('img');
+      if(existingImg) existingImg.remove();
+      try{
+        const base64 = await fileToBase64(file);
+        const preview = document.createElement('img');
+        preview.src = 'data:' + file.type + ';base64,' + base64;
+        zone.insertBefore(preview, zone.firstChild);
+        status.className = 'pz-status done';
+        status.textContent = '✓ Pinned for reference — type the numbers you see into the fields below';
+      }catch(err){
+        status.className = 'pz-status err';
+        status.textContent = 'Could not load that image — try again or a different file.';
+      }
+    }
+
+    zone.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', () => { if(fileInput.files[0]) handleFile(fileInput.files[0]); });
+    zone.addEventListener('paste', (e) => {
+      const items = (e.clipboardData || window.clipboardData).items;
+      for(const item of items){
+        if(item.type.startsWith('image/')){ handleFile(item.getAsFile()); e.preventDefault(); return; }
+      }
+    });
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault(); zone.classList.remove('dragover');
+      if(e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+    });
+  }
+
+  function countUp(el, target, formatter){
+    target = Number(target)||0;
+    const start = 0;
+    const duration = 700;
+    const t0 = performance.now();
+    function tick(now){
+      const p = Math.min(1,(now-t0)/duration);
+      const eased = 1 - Math.pow(1-p,3);
+      el.textContent = formatter(start + (target-start)*eased);
+      if(p<1) requestAnimationFrame(tick);
+      else el.textContent = formatter(target);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  const hasNativeStorage = () => (typeof window.storage !== 'undefined' && window.storage);
+  const LS_PREFIX = 'ytdash:';
+  let storageBackend = 'unknown'; // 'native' | 'local' | 'none'
+
+  async function storageGet(key){
+    if(hasNativeStorage()){
+      try{
+        const r = await window.storage.get(key, false);
+        storageBackend = 'native';
+        return r ? r.value : null;
+      }catch(e){ /* fall through to localStorage */ }
+    }
+    try{
+      const v = window.localStorage.getItem(LS_PREFIX+key);
+      storageBackend = 'local';
+      return v;
+    }catch(e){ storageBackend = 'none'; return null; }
+  }
+  async function storageSet(key, value){
+    if(hasNativeStorage()){
+      try{ await window.storage.set(key, value, false); storageBackend = 'native'; return; }
+      catch(e){ /* fall through to localStorage */ }
+    }
+    try{ window.localStorage.setItem(LS_PREFIX+key, value); storageBackend = 'local'; }
+    catch(e){ storageBackend = 'none'; console.warn('Could not persist', key, e); }
+  }
+
+  async function loadCreds(){
+    try{ const v = await storageGet('yt-creds'); if(v){ creds = JSON.parse(v); } }catch(e){}
+  }
+  async function saveCreds(){
+    try{ await storageSet('yt-creds', JSON.stringify(creds)); }
+    catch(e){ console.warn('Could not save credentials:', e); }
+  }
+  function migratePromo(p){
+    if(p.cost !== undefined) return p;
+    return {
+      video: p.video || '', goal: 'Other', status: '',
+      date: p.date || new Date().toISOString().slice(0,10),
+      cost: p.spend || '', impressions: '', views: p.result || '', subs: '', followOn: ''
+    };
+  }
+  async function loadPromos(){
+    try{ const v = await storageGet('yt-promos'); if(v){ promos = JSON.parse(v).map(migratePromo); } }catch(e){ promos = []; }
+  }
+  async function savePromos(){
+    try{ await storageSet('yt-promos', JSON.stringify(promos)); }
+    catch(e){ console.warn('Could not save promotions:', e); }
+  }
+  async function loadManual(videoId){
+    try{ const v = await storageGet('yt-manual:'+videoId); if(v) return JSON.parse(v); }catch(e){}
+    return { ctr:'', impressions:'' };
+  }
+  async function saveManual(videoId, data){
+    try{ await storageSet('yt-manual:'+videoId, JSON.stringify(data)); }
+    catch(e){ console.warn('Could not save manual fields:', e); }
+  }
+
+  async function loadHistory(){
+    try{ const v = await storageGet('yt-history'); if(v) return JSON.parse(v); }catch(e){}
+    return [];
+  }
+  async function saveHistory(hist){
+    try{ await storageSet('yt-history', JSON.stringify(hist)); }
+    catch(e){ console.warn('Could not save history:', e); }
+  }
+  async function recordHistory(subs, views, videoCount){
+    const hist = await loadHistory();
+    const today = new Date().toISOString().slice(0,10);
+    const entry = { date: today, subs: Number(subs)||0, views: Number(views)||0, videoCount: Number(videoCount)||0 };
+    const idx = hist.findIndex(h => h.date === today);
+    if(idx >= 0) hist[idx] = entry; else hist.push(entry);
+    hist.sort((a,b) => a.date.localeCompare(b.date));
+    if(hist.length > 400) hist.splice(0, hist.length - 400);
+    await saveHistory(hist);
+    return hist;
+  }
+  function findBaseline(hist){
+    if(!hist || !hist.length) return null;
+    const target = new Date();
+    target.setDate(target.getDate() - 28);
+    let best = null;
+    for(const h of hist){
+      const d = new Date(h.date + 'T00:00:00');
+      if(d <= target && (!best || d > new Date(best.date+'T00:00:00'))) best = h;
+    }
+    return best;
+  }
+
+  async function loadSnapshot(){
+    try{ const v = await storageGet('yt-snapshot'); if(v) return JSON.parse(v); }catch(e){}
+    return null;
+  }
+  async function saveSnapshot(snap){
+    try{ await storageSet('yt-snapshot', JSON.stringify(snap)); }
+    catch(e){ console.warn('Could not save snapshot:', e); }
+  }
+  function renderSnapshot(snap){
+    if(!snap || !snap.current){
+      $('stat-avgwatch').textContent = '—';
+      $('stat-impressions').textContent = '—';
+      $('stat-ctr').textContent = '—';
+      $('snapshot-updated').textContent = '';
+      return;
+    }
+    $('stat-avgwatch').textContent = formatSecondsToTime(snap.current.watchSec);
+    $('stat-impressions').textContent = fmt(snap.current.impressions);
+    $('stat-ctr').textContent = (snap.current.ctr!=null ? snap.current.ctr.toFixed(1) : '—') + '%';
+    if(snap.previous){
+      $('delta-avgwatch').innerHTML = deltaMarkup(snap.current.watchSec, snap.previous.watchSec);
+      $('delta-impressions').innerHTML = deltaMarkup(snap.current.impressions, snap.previous.impressions);
+      $('delta-ctr').innerHTML = deltaMarkup(snap.current.ctr, snap.previous.ctr);
+    }
+    const updatedEl = $('snapshot-updated');
+    updatedEl.textContent = relativeTime(snap.updatedAt);
+    const daysOld = snap.updatedAt ? (Date.now() - new Date(snap.updatedAt).getTime()) / (1000*60*60*24) : 0;
+    updatedEl.style.color = daysOld > 35 ? 'var(--rose-deep)' : 'var(--tan-deep)';
+  }
+
+  function openModal(){
+    $('input-api-key').value = creds.apiKey || '';
+    $('input-channel-id').value = creds.channelId || '';
+    $('modal-error').innerHTML = '';
+    $('modal-backdrop').style.display = 'flex';
+  }
+  function closeModal(){ $('modal-backdrop').style.display = 'none'; }
+
+  $('open-settings').onclick = openModal;
+  $('cancel-settings').onclick = closeModal;
+  $('modal-backdrop').addEventListener('click', (e)=>{ if(e.target.id==='modal-backdrop') closeModal(); });
+  $('save-settings').onclick = async function(){
+    const apiKey = $('input-api-key').value.trim();
+    const channelId = $('input-channel-id').value.trim();
+    if(!apiKey || !channelId){
+      $('modal-error').innerHTML = '<div class="error-box">Both fields are required.</div>';
+      return;
+    }
+    const btn = $('save-settings');
+    const originalLabel = btn.textContent;
+    btn.textContent = 'Connecting…';
+    btn.disabled = true;
+    try{
+      creds = { apiKey, channelId };
+      await saveCreds();
+      closeModal();
+      await fetchChannelData();
+    }catch(e){
+      $('modal-error').innerHTML = '<div class="error-box">Something went wrong: ' + (e && e.message ? e.message : e) + '</div>';
+      $('modal-backdrop').style.display = 'flex';
+    }finally{
+      btn.textContent = originalLabel;
+      btn.disabled = false;
+    }
+  };
+
+  async function fetchChannelData(){
+    $('ticker-status').textContent = 'SYNCING…';
+    $('hero-extra').innerHTML = '';
+    try{
+      const rawId = creds.channelId.trim();
+      const isHandle = rawId.startsWith('@') || !/^UC[A-Za-z0-9_-]{22}$/.test(rawId);
+      const chParam = isHandle
+        ? `forHandle=${encodeURIComponent(rawId.startsWith('@') ? rawId : '@'+rawId)}`
+        : `id=${encodeURIComponent(rawId)}`;
+      const chUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,statistics,contentDetails&${chParam}&key=${encodeURIComponent(creds.apiKey)}`;
+      const chRes = await fetch(chUrl);
+      const chData = await chRes.json();
+      if(chData.error){ throw new Error(chData.error.message || 'API error'); }
+      if(!chData.items || !chData.items.length){ throw new Error('No channel found for that Channel ID or handle. Double-check it was copied exactly, with no extra spaces.'); }
+      const ch = chData.items[0];
+
+      $('channel-name').textContent = ch.snippet.title;
+      const subsVal = ch.statistics.hiddenSubscriberCount ? 0 : Number(ch.statistics.subscriberCount);
+      const viewsVal = Number(ch.statistics.viewCount);
+      const videosVal = Number(ch.statistics.videoCount);
+      countUp($('stat-subs'), subsVal, ch.statistics.hiddenSubscriberCount ? (()=>'Hidden') : fmt);
+      countUp($('stat-views'), viewsVal, fmt);
+      countUp($('stat-videos'), videosVal, fmt);
+      $('ticker-status').textContent = 'LIVE · ' + ch.snippet.title;
+      $('ticker-time').textContent = 'Last checked ' + new Date().toLocaleString();
+
+      if(!ch.statistics.hiddenSubscriberCount){
+        const hist = await recordHistory(subsVal, viewsVal, videosVal);
+        const baseline = findBaseline(hist);
+        if(baseline){
+          $('delta-subs').innerHTML = deltaMarkup(subsVal, baseline.subs);
+          $('delta-views').innerHTML = deltaMarkup(viewsVal, baseline.views);
+          $('delta-videos').innerHTML = deltaMarkup(videosVal, baseline.videoCount);
+        }else{
+          const msg = '<span class="delta flat">tracking started</span>';
+          $('delta-subs').innerHTML = msg; $('delta-views').innerHTML = msg; $('delta-videos').innerHTML = msg;
+        }
+      }
+
+      const uploadsPlaylist = ch.contentDetails.relatedPlaylists.uploads;
+      const plUrl = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${uploadsPlaylist}&maxResults=12&key=${encodeURIComponent(creds.apiKey)}`;
+      const plRes = await fetch(plUrl);
+      const plData = await plRes.json();
+      if(plData.error){ throw new Error(plData.error.message || 'API error'); }
+
+      const videoIds = (plData.items||[]).map(i => i.snippet.resourceId.videoId).filter(Boolean);
+      let videos = [];
+      if(videoIds.length){
+        const vUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics&id=${videoIds.join(',')}&key=${encodeURIComponent(creds.apiKey)}`;
+        const vRes = await fetch(vUrl);
+        const vData = await vRes.json();
+        if(vData.error){ throw new Error(vData.error.message || 'API error'); }
+        videos = vData.items || [];
+      }
+
+      await renderVideos(videos);
+      $('videos-section').style.display = '';
+      $('filmstrip-2').style.display = '';
+    }catch(err){
+      $('ticker-status').textContent = 'CONNECTION ERROR';
+      const box = document.createElement('div');
+      box.className = 'error-box';
+      box.textContent = 'Could not load channel data: ' + err.message;
+      $('hero-extra').innerHTML = '';
+      $('hero-extra').appendChild(box);
+    }
+  }
+
+  function escapeHtml(s){ const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+  let cachedVideos = [];
+  async function renderVideos(videos){
+    cachedVideos = videos;
+    const grid = $('videos-grid');
+    grid.innerHTML = '';
+    const metricsMap = await loadVideoMetricsMap();
+    for(const v of videos){
+      const found = metricsMap[normalizeTitle(v.snippet.title)];
+      const promoStatus = promoStatusForVideo(v.snippet.title);
+      const badgeLabel = promoStatus === 'active' ? 'Active' : promoStatus === 'ended' ? 'Ended' : 'None';
+      const card = document.createElement('div');
+      card.className = 'vcard';
+      const thumb = v.snippet.thumbnails.medium ? v.snippet.thumbnails.medium.url : (v.snippet.thumbnails.default||{}).url;
+      card.innerHTML = `
+        <img src="${thumb||''}" alt="" loading="lazy">
+        <div class="vcard-body">
+          <div class="vcard-title">${escapeHtml(v.snippet.title)}</div>
+          <span class="promo-badge ${promoStatus}">💲 ${badgeLabel}</span>
+          <div class="vmetrics">
+            <span>👁 <b>${fmt(v.statistics.viewCount)}</b></span>
+            <span>👍 <b>${fmt(v.statistics.likeCount||0)}</b></span>
+            <span>💬 <b>${fmt(v.statistics.commentCount||0)}</b></span>
+          </div>
+          <div class="vmetrics" style="margin-top:2px;">
+            <span>🎯 <b>${found && found.ctr!=null ? found.ctr.toFixed(1)+'%' : '—'}</b></span>
+            <span>🔎 <b>${found && found.impressions!=null ? fmt(found.impressions) : '—'}</b></span>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+    }
+  }
+
+  function escapeAttr(s){ return (s||'').replace(/"/g,'&quot;'); }
+
+  function normalizeTitle(s){
+    return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  }
+  function splitDelimited(line){
+    if(line.includes('\t')) return line.split('\t');
+    // naive CSV split respecting simple quoted fields
+    const out = []; let cur = ''; let inQuotes = false;
+    for(let i=0;i<line.length;i++){
+      const c = line[i];
+      if(c === '"'){ inQuotes = !inQuotes; continue; }
+      if(c === ',' && !inQuotes){ out.push(cur); cur=''; continue; }
+      cur += c;
+    }
+    out.push(cur);
+    return out;
+  }
+  function isDateLike(d){
+    return d && Object.prototype.toString.call(d) === '[object Date]' && !isNaN(d.getTime ? d.getTime() : NaN);
+  }
+  function excelDateToISO(d){
+    if(!isDateLike(d)) return null;
+    const y=d.getUTCFullYear(), m=String(d.getUTCMonth()+1).padStart(2,'0'), day=String(d.getUTCDate()).padStart(2,'0');
+    return `${y}-${m}-${day}`;
+  }
+  function excelTimeToSeconds(d){
+    if(!isDateLike(d)) return null;
+    return d.getUTCHours()*3600 + d.getUTCMinutes()*60 + d.getUTCSeconds();
+  }
+
+  function parseWorkbookForAnalytics(rows){
+    const header = rows[0].map(h => String(h||'').trim().toLowerCase());
+    const titleIdx = header.findIndex(h => h.includes('title'));
+    if(titleIdx === -1) return null;
+    const costIdx = header.findIndex(h => h.includes('cost'));
+    if(costIdx !== -1) return null; // has a Cost column -> that's the promotions sheet, not analytics
+    const viewsIdx = header.findIndex(h => h === 'views');
+    const avdIdx = header.findIndex(h => h.includes('average view duration') || h.includes('avg view duration'));
+    const watchHoursIdx = header.findIndex(h => h.includes('watch time'));
+    const subsIdx = header.findIndex(h => h.includes('subscriber'));
+    const impIdx = header.findIndex(h => h.includes('impression') && !h.includes('click'));
+    const ctrIdx = header.findIndex(h => h.includes('click') || h.includes('ctr'));
+    if(viewsIdx === -1 && impIdx === -1) return null;
+
+    const out = [];
+    let sumViews=0, sumImpressions=0, sumWatchHours=0, sumClicks=0;
+    for(let i=1;i<rows.length;i++){
+      const r = rows[i];
+      if(!r) continue;
+      const title = String(r[titleIdx]||'').trim();
+      if(!title) continue;
+      const views = viewsIdx!==-1 ? (Number(r[viewsIdx])||0) : NaN;
+      const impressions = impIdx!==-1 ? (Number(r[impIdx])||0) : NaN;
+      const ctr = ctrIdx!==-1 ? (Number(r[ctrIdx])||0) : NaN;
+      const subs = subsIdx!==-1 ? (Number(r[subsIdx])||0) : NaN;
+      let watchHours = NaN;
+      if(watchHoursIdx !== -1){
+        watchHours = Number(r[watchHoursIdx])||0;
+      }else if(avdIdx !== -1 && !isNaN(views)){
+        const avdSec = excelTimeToSeconds(r[avdIdx]);
+        if(avdSec != null) watchHours = (views*avdSec)/3600;
+      }
+      out.push({ title, views, watchHours, subs, impressions, ctr });
+      if(!isNaN(views)) sumViews += views;
+      if(!isNaN(impressions)) sumImpressions += impressions;
+      if(!isNaN(watchHours)) sumWatchHours += watchHours;
+      if(!isNaN(ctr) && !isNaN(impressions)) sumClicks += impressions*(ctr/100);
+    }
+    if(!out.length) return null;
+    const totalRow = {
+      impressions: sumImpressions,
+      ctr: sumImpressions > 0 ? (sumClicks/sumImpressions*100) : NaN,
+      watchHours: sumWatchHours,
+      views: sumViews
+    };
+    return { rows: out, totalRow };
+  }
+
+  function parseWorkbookForPromotions(rows){
+    const header = rows[0].map(h => String(h||'').trim().toLowerCase());
+    const titleIdx = header.findIndex(h => h.includes('title') || h.includes('promotion') || h.includes('video'));
+    const costIdx = header.findIndex(h => h.includes('cost') && !h.includes('per'));
+    if(titleIdx === -1 || costIdx === -1) return null;
+    const statusIdx = header.findIndex(h => h === 'status');
+    const goalIdx = header.findIndex(h => h.includes('type of promotion') || h.includes('goal'));
+    const dateIdx = header.findIndex(h => h.includes('date'));
+    const impIdx = header.findIndex(h => h.includes('impression'));
+    const viewsIdx = header.findIndex(h => h === 'views');
+    const subsIdx = header.findIndex(h => h.includes('subscriber'));
+    const followIdx = header.findIndex(h => h.includes('follow'));
+
+    const out = [];
+    for(let i=1;i<rows.length;i++){
+      const r = rows[i];
+      if(!r) continue;
+      const video = String(r[titleIdx]||'').trim();
+      if(!video) continue;
+      const rawGoal = goalIdx!==-1 ? String(r[goalIdx]||'').trim() : '';
+      const goal = (rawGoal === 'Audience growth' || rawGoal === 'Video views') ? rawGoal : 'Other';
+      const date = (dateIdx!==-1 ? excelDateToISO(r[dateIdx]) : null) || new Date().toISOString().slice(0,10);
+      out.push({
+        video, goal,
+        status: statusIdx!==-1 ? String(r[statusIdx]||'') : '',
+        date,
+        cost: Number(r[costIdx])||0,
+        impressions: impIdx!==-1 ? (Number(r[impIdx])||0) : 0,
+        views: viewsIdx!==-1 ? (Number(r[viewsIdx])||0) : 0,
+        subs: subsIdx!==-1 ? (Number(r[subsIdx])||0) : 0,
+        followOn: followIdx!==-1 ? (Number(r[followIdx])||0) : ''
+      });
+    }
+    return out.length ? out : null;
+  }
+
+  function parseVideoAnalyticsExport(raw){
+    const lines = raw.split('\n').map(l => l.replace(/\r$/,'')).filter(l => l.trim().length);
+    if(lines.length < 2) return null;
+    const header = splitDelimited(lines[0]).map(h => h.trim().toLowerCase());
+    const titleIdx = header.findIndex(h => h.includes('title'));
+    if(titleIdx === -1) return null;
+    const contentIdx = header.findIndex(h => h === 'content');
+    const viewsIdx = header.findIndex(h => h === 'views' || (h.includes('view') && !h.includes('impression')));
+    const watchIdx = header.findIndex(h => h.includes('watch time'));
+    const subsIdx = header.findIndex(h => h.includes('subscriber'));
+    const ctrIdx = header.findIndex(h => h.includes('click') || h.includes('ctr'));
+    const impIdx = header.findIndex(h => h.includes('impression') && !h.includes('click'));
+    const rows = [];
+    let totalRow = null;
+    for(let i=1;i<lines.length;i++){
+      const cells = splitDelimited(lines[i]);
+      if(cells.length <= titleIdx) continue;
+      const isTotalRow = contentIdx !== -1 && (cells[contentIdx]||'').trim().toLowerCase() === 'total';
+      const title = cells[titleIdx].trim();
+      const parsed = {
+        title: title,
+        views: viewsIdx !== -1 ? parseNumberLoose(cells[viewsIdx]) : NaN,
+        watchHours: watchIdx !== -1 ? parseNumberLoose(cells[watchIdx]) : NaN,
+        subs: subsIdx !== -1 ? parseNumberLoose(cells[subsIdx]) : NaN,
+        impressions: impIdx !== -1 ? parseNumberLoose(cells[impIdx]) : NaN,
+        ctr: ctrIdx !== -1 ? parseNumberLoose(cells[ctrIdx]) : NaN
+      };
+      if(isTotalRow){ totalRow = parsed; continue; }
+      if(!title) continue;
+      rows.push(parsed);
+    }
+    return (rows.length || totalRow) ? { rows, totalRow } : null;
+  }
+
+  async function loadVideoMetrics(){
+    try{ const v = await storageGet('yt-video-metrics'); if(v) return JSON.parse(v); }catch(e){}
+    return [];
+  }
+  async function saveVideoMetrics(list){
+    try{ await storageSet('yt-video-metrics', JSON.stringify(list)); }
+    catch(e){ console.warn('Could not save video metrics:', e); }
+  }
+  async function loadVideoMetricsMap(){
+    const list = await loadVideoMetrics();
+    const map = {};
+    list.forEach(v => { map[normalizeTitle(v.title)] = v; });
+    return map;
+  }
+
+  async function applyVideoAnalyticsRows(rows, totalRow){
+    const existingList = await loadVideoMetrics();
+    const byTitle = {};
+    existingList.forEach(v => { byTitle[normalizeTitle(v.title)] = v; });
+    rows.forEach(row => {
+      const key = normalizeTitle(row.title);
+      const merged = byTitle[key] || { title: row.title };
+      merged.title = row.title;
+      if(!isNaN(row.views)) merged.views = row.views;
+      if(!isNaN(row.watchHours)) merged.watchHours = row.watchHours;
+      if(!isNaN(row.subs)) merged.subs = row.subs;
+      if(!isNaN(row.impressions)) merged.impressions = row.impressions;
+      if(!isNaN(row.ctr)) merged.ctr = row.ctr;
+      byTitle[key] = merged;
+    });
+    const mergedList = Object.values(byTitle);
+    await saveVideoMetrics(mergedList);
+    if(cachedVideos.length) await renderVideos(cachedVideos);
+
+    let snapshotUpdated = false;
+    if(totalRow && (!isNaN(totalRow.impressions) || !isNaN(totalRow.ctr))){
+      const oldSnap = await loadSnapshot();
+      const newCurrent = {
+        impressions: !isNaN(totalRow.impressions) ? totalRow.impressions : null,
+        ctr: !isNaN(totalRow.ctr) ? totalRow.ctr : null,
+        watchSec: (!isNaN(totalRow.watchHours) && !isNaN(totalRow.views) && totalRow.views > 0)
+          ? (totalRow.watchHours * 3600) / totalRow.views : null
+      };
+      const snap = {
+        current: newCurrent,
+        previous: (oldSnap && oldSnap.current) ? oldSnap.current : (oldSnap ? oldSnap.previous : null),
+        updatedAt: new Date().toISOString()
+      };
+      await saveSnapshot(snap);
+      renderSnapshot(snap);
+      snapshotUpdated = true;
+    }
+    renderPromos(); // also refreshes the merged By Video rollup
+    return { videoCount: rows.length, totalInLibrary: mergedList.length, snapshotUpdated };
+  }
+
+  function outcomeFor(p){
+    // Which metric matters for this promo's goal, and its value
+    if(p.goal === 'Audience growth') return { label: 'sub', value: Number(p.subs)||0 };
+    if(p.goal === 'Video views') return { label: 'view', value: Number(p.views)||0 };
+    const v = Number(p.views)||0, s = Number(p.subs)||0;
+    return s > v ? { label: 'sub', value: s } : { label: 'view', value: v };
+  }
+
+  const TERMINAL_STATUSES = ['ended','removed','rejected','declined'];
+  const isPromoActive = (status) => {
+    const s = String(status||'').trim().toLowerCase();
+    return s !== '' && !TERMINAL_STATUSES.includes(s);
+  };
+  function promoStatusForVideo(title){
+    const norm = normalizeTitle(title);
+    const matches = promos.filter(p => normalizeTitle(p.video) === norm);
+    if(!matches.length) return 'none';
+    return matches.some(p => isPromoActive(p.status)) ? 'active' : 'ended';
+  }
+
+  function renderPromos(){
+    const body = $('promo-body');
+    body.innerHTML = '';
+    if(!promos.length){
+      body.innerHTML = '<div class="empty-state"><span class="emoji">🎬</span>No promotions logged yet — click "Add promotion" or import your YouTube Promote list.</div>';
+    }
+    let totalCost = 0, totalImpressions = 0, totalViews = 0, totalSubs = 0;
+    let spend30 = 0, spendPrev30 = 0, activeCount = 0;
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - 30);
+    const cutoffPrev = new Date();
+    cutoffPrev.setDate(cutoffPrev.getDate() - 60);
+    promos.forEach((p, idx) => {
+      const cost = Number(p.cost)||0;
+      totalCost += cost;
+      totalImpressions += Number(p.impressions)||0;
+      totalViews += Number(p.views)||0;
+      totalSubs += Number(p.subs)||0;
+      if(isPromoActive(p.status)) activeCount++;
+      if(p.date){
+        const d = new Date(p.date + 'T00:00:00');
+        if(!isNaN(d)){
+          if(d >= cutoff){ spend30 += cost; }
+          else if(d >= cutoffPrev && d < cutoff){ spendPrev30 += cost; }
+        }
+      }
+      const outcome = outcomeFor(p);
+      const cpo = (cost > 0 && outcome.value > 0) ? money(cost/outcome.value) + '/' + outcome.label : '—';
+      const nb = (v) => (v === '' || v === null || v === undefined) ? '' : v;
+      const row = document.createElement('div');
+      row.className = 'promo-row' + (idx===justAddedIdx ? ' row-in' : '');
+      row.innerHTML = `
+        <input type="text" value="${escapeAttr(p.video)}" data-idx="${idx}" data-field="video" placeholder="Video title" title="${escapeAttr(p.video)}${p.status ? ' — '+escapeAttr(p.status) : ''}">
+        <select data-idx="${idx}" data-field="goal">
+          ${['Audience growth','Video views','Other'].map(opt =>
+            `<option value="${opt}" ${p.goal===opt?'selected':''}>${opt}</option>`).join('')}
+        </select>
+        <input type="date" value="${p.date||''}" data-idx="${idx}" data-field="date">
+        <input class="num" type="number" value="${nb(p.cost)}" data-idx="${idx}" data-field="cost" placeholder="$0">
+        <input class="num" type="number" value="${nb(p.impressions)}" data-idx="${idx}" data-field="impressions" placeholder="0">
+        <input class="num" type="number" value="${nb(p.views)}" data-idx="${idx}" data-field="views" placeholder="0">
+        <input class="num" type="number" value="${nb(p.subs)}" data-idx="${idx}" data-field="subs" placeholder="0">
+        <div class="cpr">${cpo}</div>
+        <button class="del-btn" data-idx="${idx}" title="Remove">×</button>
+      `;
+      body.appendChild(row);
+    });
+    justAddedIdx = null;
+
+    $('stat-promos').textContent = activeCount;
+    $('delta-promos').innerHTML = '';
+    $('stat-spend30').textContent = money(spend30);
+    $('delta-spend30').innerHTML = deltaMarkup(spend30, spendPrev30);
+    $('roi-spend').textContent = money(totalCost);
+    $('roi-impressions').textContent = fmt(totalImpressions);
+    $('roi-views').textContent = fmt(totalViews);
+    $('roi-subs').textContent = fmt(totalSubs);
+    $('roi-cost-per-sub').textContent = (totalCost > 0 && totalSubs > 0) ? money(totalCost/totalSubs) : '—';
+
+    body.querySelectorAll('input, select').forEach(el => {
+      el.addEventListener('change', async (e) => {
+        const idx = Number(e.target.dataset.idx), field = e.target.dataset.field;
+        promos[idx][field] = e.target.value;
+        await savePromos();
+        renderPromos();
+      });
+    });
+    body.querySelectorAll('.del-btn').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const idx = Number(e.target.dataset.idx);
+        promos.splice(idx,1);
+        await savePromos();
+        renderPromos();
+      });
+    });
+    renderVideoRollup();
+    if(cachedVideos.length) renderVideos(cachedVideos);
+  }
+
+  let rollupRenderToken = 0;
+  async function renderVideoRollup(){
+    const myToken = ++rollupRenderToken;
+    const body = $('video-rollup-body');
+    if(!body) return;
+    const metricsMap = await loadVideoMetricsMap();
+    if(myToken !== rollupRenderToken) return; // a newer render started while we were loading; abandon this one
+    body.innerHTML = '';
+    const groups = {};
+    promos.forEach(p => {
+      const key = (p.video || 'Untitled').trim();
+      if(!groups[key]) groups[key] = { video: key, cost:0, promoViews:0, subs:0, count:0, goals:{} };
+      const g = groups[key];
+      g.cost += Number(p.cost)||0;
+      g.promoViews += Number(p.views)||0;
+      g.subs += Number(p.subs)||0;
+      g.count++;
+      g.goals[p.goal] = (g.goals[p.goal]||0) + 1;
+    });
+    // Also surface videos that have analytics data but no promotions, so the merged view is complete
+    Object.values(metricsMap).forEach(v => {
+      const key = v.title.trim();
+      const normKey = Object.keys(groups).find(k => normalizeTitle(k) === normalizeTitle(key));
+      if(!normKey && !groups[key]){
+        groups[key] = { video: key, cost:0, promoViews:0, subs:0, count:0, goals:{} };
+      }
+    });
+    const rows = Object.values(groups);
+    if(!rows.length){
+      body.innerHTML = '<div class="empty-state"><span class="emoji">🎬</span>No promotions or analytics imported yet.</div>';
+      return;
+    }
+    rows.sort((a,b) => b.cost - a.cost);
+    rows.forEach(g => {
+      const analytics = metricsMap[normalizeTitle(g.video)];
+      const totalViews = analytics && !isNaN(analytics.views) ? analytics.views : g.promoViews;
+      const dominantGoal = Object.keys(g.goals).length
+        ? Object.entries(g.goals).sort((a,b)=>b[1]-a[1])[0][0]
+        : 'Other';
+      const outcome = dominantGoal === 'Video views' ? { label:'view', value: totalViews } : { label:'sub', value: g.subs };
+      const cpo = (g.cost > 0 && outcome.value > 0) ? money(g.cost/outcome.value) + '/' + outcome.label : '—';
+      const watchStr = analytics && !isNaN(analytics.watchHours) ? analytics.watchHours.toFixed(1)+'h' : '—';
+      const impStr = analytics && !isNaN(analytics.impressions) ? fmt(analytics.impressions) : '—';
+      const ctrStr = analytics && !isNaN(analytics.ctr) ? analytics.ctr.toFixed(1)+'%' : '—';
+      const row = document.createElement('div');
+      row.className = 'promo-row';
+      row.style.gridTemplateColumns = '1.6fr 0.5fr 0.7fr 0.8fr 0.6fr 0.7fr 0.7fr 0.7fr 0.9fr';
+      row.innerHTML = `
+        <div style="font-size:12.5px;font-weight:600;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeAttr(g.video)}">${escapeHtml(g.video)}</div>
+        <div style="font-size:12.5px;color:var(--ink-dim);">${g.count || '—'}</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--tan-deep);">${g.cost ? money(g.cost) : '—'}</div>
+        <div style="font-size:12.5px;">${fmt(totalViews)}</div>
+        <div style="font-size:12.5px;">${g.subs || '—'}</div>
+        <div style="font-size:12.5px;">${watchStr}</div>
+        <div style="font-size:12.5px;">${impStr}</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--navy);">${ctrStr}</div>
+        <div class="cpr">${cpo}</div>
+      `;
+      body.appendChild(row);
+    });
+  }
+
+  $('view-by-campaign').onclick = function(){
+    $('campaign-view').style.display = '';
+    $('video-view').style.display = 'none';
+    $('view-by-campaign').style.background = 'var(--navy)';
+    $('view-by-campaign').style.color = '#fff';
+    $('view-by-video').style.background = 'none';
+    $('view-by-video').style.color = 'var(--ink-dim)';
+  };
+  $('view-by-video').onclick = function(){
+    $('campaign-view').style.display = 'none';
+    $('video-view').style.display = '';
+    $('view-by-video').style.background = 'var(--navy)';
+    $('view-by-video').style.color = '#fff';
+    $('view-by-campaign').style.background = 'none';
+    $('view-by-campaign').style.color = 'var(--ink-dim)';
+    renderVideoRollup();
+  };
+
+  function normalizeDate(raw){
+    if(!raw) return new Date().toISOString().slice(0,10);
+    const d = new Date(raw.trim());
+    if(isNaN(d)) return new Date().toISOString().slice(0,10);
+    return d.toISOString().slice(0,10);
+  }
+  function parseYouTubePromoteText(raw){
+    const lines = raw.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const start = lines.findIndex(l => l.startsWith('Video thumbnail:'));
+    if(start === -1) return null;
+    const records = [];
+    let i = start;
+    while(i < lines.length){
+      if(!lines[i].startsWith('Video thumbnail:')){ i++; continue; }
+      if(i + 10 >= lines.length) break;
+      const chunk = lines.slice(i, i+11);
+      const [thumbLine, duration, title, status, goal, dateStr, costStr, impStr, viewsStr, subsStr, followStr] = chunk;
+      records.push({
+        video: title || thumbLine.replace('Video thumbnail:','').trim(),
+        goal: (goal === 'Audience growth' || goal === 'Video views') ? goal : 'Other',
+        status: status || '',
+        date: normalizeDate(dateStr),
+        cost: parseNumberLoose(costStr) || 0,
+        impressions: parseNumberLoose(impStr) || 0,
+        views: parseNumberLoose(viewsStr) || 0,
+        subs: parseNumberLoose(subsStr) || 0,
+        followOn: (followStr === '–' || followStr === '-' || followStr === '') ? '' : (parseNumberLoose(followStr) || 0)
+      });
+      i += 11;
+    }
+    return records.length ? records : null;
+  }
+  function parseSpreadsheetText(raw){
+    const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+    const records = [];
+    lines.forEach(line => {
+      const cells = line.includes('\t') ? line.split('\t') : line.split(',');
+      if(cells.length < 2) return;
+      const [video, goalOrPlatform, date, spend, result] = cells.map(c => (c||'').trim());
+      records.push({
+        video: video || 'Untitled promotion',
+        goal: (goalOrPlatform === 'Audience growth' || goalOrPlatform === 'Video views') ? goalOrPlatform : 'Other',
+        status: '',
+        date: normalizeDate(date),
+        cost: spend ? parseNumberLoose(spend) : 0,
+        impressions: 0,
+        views: result ? parseNumberLoose(result) : 0,
+        subs: 0,
+        followOn: ''
+      });
+    });
+    return records.length ? records : null;
+  }
+  function promoKey(p){
+    return [normalizeTitle(p.video), p.goal, p.date, Number(p.cost)||0].join('|');
+  }
+  async function applyPromoRecords(records){
+    const existingKeys = new Set(promos.map(promoKey));
+    const newOnes = records.filter(r => !existingKeys.has(promoKey(r)));
+    const skipped = records.length - newOnes.length;
+    promos.push(...newOnes);
+    await savePromos();
+    renderPromos();
+    return { added: newOnes.length, skipped };
+  }
+
+  async function handleWorkbookFile(file){
+    const status = $('dz-status');
+    status.className = 'dz-status working';
+    status.textContent = 'Reading ' + file.name + '…';
+    try{
+      if(typeof XLSX === 'undefined'){ throw new Error('Spreadsheet reader failed to load — check your connection and try again.'); }
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type:'array', cellDates:true });
+      let analyticsResult = null, promoRecords = null;
+      let recognizedSheets = 0;
+      for(const sheetName of wb.SheetNames){
+        const sheet = wb.Sheets[sheetName];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header:1, defval:null });
+        if(!rows || !rows.length) continue;
+        if(!analyticsResult){
+          const a = parseWorkbookForAnalytics(rows);
+          if(a){ analyticsResult = a; recognizedSheets++; continue; }
+        }
+        if(!promoRecords){
+          const p = parseWorkbookForPromotions(rows);
+          if(p){ promoRecords = p; recognizedSheets++; continue; }
+        }
+      }
+      if(!analyticsResult && !promoRecords){
+        throw new Error('Could not find a recognizable Analytics or Promotions tab in that file.');
+      }
+      const msgParts = [];
+      if(analyticsResult){
+        const r = await applyVideoAnalyticsRows(analyticsResult.rows, analyticsResult.totalRow);
+        msgParts.push(`${r.videoCount} video${r.videoCount===1?'':'s'} analytics updated`);
+      }else{
+        msgParts.push('⚠ no Analytics tab recognized');
+      }
+      if(promoRecords){
+        const r = await applyPromoRecords(promoRecords);
+        msgParts.push(`${r.added} new promotion${r.added===1?'':'s'}` + (r.skipped ? ` (${r.skipped} already had)` : ''));
+      }else{
+        msgParts.push('⚠ no Promotions tab recognized');
+      }
+      const unrecognizedCount = wb.SheetNames.length - recognizedSheets;
+      if(unrecognizedCount > 0 && (!analyticsResult || !promoRecords)){
+        msgParts.push(`(${unrecognizedCount} tab${unrecognizedCount===1?'':'s'} didn't match either format — check column headers)`);
+      }
+      status.className = (analyticsResult && promoRecords) ? 'dz-status done' : 'dz-status err';
+      status.textContent = (analyticsResult && promoRecords ? '✓ ' : '') + msgParts.join(' · ');
+      setTimeout(() => { status.textContent = ''; status.className = 'dz-status'; }, 10000);
+    }catch(err){
+      status.className = 'dz-status err';
+      status.textContent = 'Could not read that file: ' + err.message;
+    }
+  }
+  (function setupDropZone(){
+    const zone = $('xlsx-drop-zone');
+    const fileInput = $('xlsx-file-input');
+    zone.addEventListener('click', () => fileInput.click());
+    zone.addEventListener('keydown', (e) => { if(e.key === 'Enter' || e.key === ' ') fileInput.click(); });
+    fileInput.addEventListener('change', () => { if(fileInput.files[0]) handleWorkbookFile(fileInput.files[0]); });
+    zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', (e) => {
+      e.preventDefault(); zone.classList.remove('dragover');
+      if(e.dataTransfer.files[0]) handleWorkbookFile(e.dataTransfer.files[0]);
+    });
+  })();
+
+  async function init(){
+    try{
+      await storageSet('yt-probe', '1');
+      const probe = await storageGet('yt-probe');
+      if(probe !== '1'){
+        const warn = document.createElement('div');
+        warn.className = 'error-box';
+        warn.style.marginTop = '18px';
+        warn.textContent = "Heads up: this browser is blocking storage (e.g. private/incognito mode), so entries won't be saved between visits here.";
+        $('hero-extra').appendChild(warn);
+      }
+    }catch(e){}
+    await loadCreds();
+    await loadPromos();
+    renderPromos();
+    const snap = await loadSnapshot();
+    renderSnapshot(snap);
+    if(creds.apiKey && creds.channelId){
+      fetchChannelData();
+    }else{
+      $('ticker-status').textContent = 'NOT CONNECTED';
+      const cta = document.createElement('div');
+      cta.className = 'setup-cta';
+      cta.innerHTML = `<span class="emoji">🎥</span><p>Connect your YouTube channel to pull in live stats.</p>`;
+      const btn = document.createElement('button');
+      btn.className = 'btn-primary';
+      btn.style.maxWidth='220px';
+      btn.style.margin='0 auto';
+      btn.textContent = 'Connect channel';
+      btn.onclick = openModal;
+      cta.appendChild(btn);
+      $('hero-extra').appendChild(cta);
+    }
+  }
+  init();
+})();
+</script>
