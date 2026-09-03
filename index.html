@@ -1,3 +1,4 @@
+
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Mulish:wght@400;500;600;700&family=Alex+Brush&display=swap');
 
@@ -579,6 +580,13 @@
   }
   async function loadPromos(){
     try{ const v = await storageGet('yt-promos'); if(v){ promos = JSON.parse(v).map(migratePromo); } }catch(e){ promos = []; }
+    // One-time cleanup: collapse any duplicate rows created by the old date-based
+    // dedup key (e.g. from re-dropping the same spreadsheet on different days).
+    const deduped = dedupePromos(promos);
+    if(deduped.length !== promos.length){
+      promos = deduped;
+      await savePromos();
+    }
   }
   async function savePromos(){
     try{ await storageSet('yt-promos', JSON.stringify(promos)); }
@@ -1230,7 +1238,21 @@
     return records.length ? records : null;
   }
   function promoKey(p){
-    return [normalizeTitle(p.video), p.goal, p.date, Number(p.cost)||0].join('|');
+    // Content-based identity — deliberately excludes date, since the date column
+    // isn't always read as a true Excel date and can silently fall back to
+    // "today," which made re-imports on different days create duplicate rows.
+    return [normalizeTitle(p.video), p.goal, Number(p.cost)||0, Number(p.impressions)||0, Number(p.views)||0, Number(p.subs)||0].join('|');
+  }
+  function dedupePromos(list){
+    const seen = new Set();
+    const out = [];
+    list.forEach(p => {
+      const key = promoKey(p);
+      if(seen.has(key)) return;
+      seen.add(key);
+      out.push(p);
+    });
+    return out;
   }
   async function applyPromoRecords(records){
     const existingKeys = new Set(promos.map(promoKey));
