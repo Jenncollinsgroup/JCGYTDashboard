@@ -1238,30 +1238,53 @@
     return records.length ? records : null;
   }
   function promoKey(p){
-    // Content-based identity — deliberately excludes date, since the date column
-    // isn't always read as a true Excel date and can silently fall back to
-    // "today," which made re-imports on different days create duplicate rows.
-    return [normalizeTitle(p.video), p.goal, Number(p.cost)||0, Number(p.impressions)||0, Number(p.views)||0, Number(p.subs)||0].join('|');
+    // Identity of a campaign — video + goal + cost. Deliberately excludes date
+    // (unreliable — see note below) AND excludes impressions/views/subs, since
+    // those keep growing for a promo that's still actively running, so two
+    // imports of the *same* campaign a week apart would otherwise look like
+    // different records and get duplicated instead of updated.
+    return [normalizeTitle(p.video), p.goal, Number(p.cost)||0].join('|');
   }
   function dedupePromos(list){
-    const seen = new Set();
-    const out = [];
+    // Collapse to one row per campaign identity, keeping whichever row has the
+    // largest metrics (the most recently-updated numbers, since stats only grow).
+    const byKey = new Map();
     list.forEach(p => {
       const key = promoKey(p);
-      if(seen.has(key)) return;
-      seen.add(key);
-      out.push(p);
+      const existing = byKey.get(key);
+      if(!existing){ byKey.set(key, p); return; }
+      const bigger = (Number(p.impressions)||0) + (Number(p.views)||0) + (Number(p.subs)||0)
+        > (Number(existing.impressions)||0) + (Number(existing.views)||0) + (Number(existing.subs)||0);
+      if(bigger) byKey.set(key, p);
     });
-    return out;
+    return Array.from(byKey.values());
   }
   async function applyPromoRecords(records){
-    const existingKeys = new Set(promos.map(promoKey));
-    const newOnes = records.filter(r => !existingKeys.has(promoKey(r)));
-    const skipped = records.length - newOnes.length;
-    promos.push(...newOnes);
+    const byKey = new Map();
+    promos.forEach((p, i) => byKey.set(promoKey(p), i));
+    let added = 0, updated = 0;
+    records.forEach(r => {
+      const key = promoKey(r);
+      const idx = byKey.get(key);
+      if(idx === undefined){
+        promos.push(r);
+        byKey.set(key, promos.length - 1);
+        added++;
+      } else {
+        // Same campaign seen before — refresh with the latest stats rather than
+        // adding a duplicate row (a still-running promo's numbers keep growing).
+        const existing = promos[idx];
+        existing.impressions = Number(r.impressions)||0;
+        existing.views = Number(r.views)||0;
+        existing.subs = Number(r.subs)||0;
+        if(r.status) existing.status = r.status;
+        if(r.date) existing.date = r.date;
+        updated++;
+      }
+    });
     await savePromos();
     renderPromos();
-    return { added: newOnes.length, skipped };
+    return { added, skipped: updated };
   }
 
   async function handleWorkbookFile(file){
