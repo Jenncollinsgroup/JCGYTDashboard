@@ -775,7 +775,7 @@
     grid.innerHTML = '';
     const metricsMap = await loadVideoMetricsMap();
     for(const v of videos){
-      const found = metricsMap[normalizeTitle(v.snippet.title)];
+      const found = findByFuzzyTitle(v.snippet.title, metricsMap);
       const promoStatus = promoStatusForVideo(v.snippet.title);
       const badgeLabel = promoStatus === 'active' ? 'Active' : promoStatus === 'ended' ? 'Ended' : 'None';
       const card = document.createElement('div');
@@ -804,6 +804,26 @@
 
   function normalizeTitle(s){
     return (s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  }
+  function titlesMatch(a, b){
+    // YouTube's Promotions export sometimes truncates long video titles, while
+    // the Analytics export and the live API return the full title. An exact
+    // match would silently fail for any truncated title, so treat a long
+    // shared prefix as a match too.
+    const na = normalizeTitle(a), nb = normalizeTitle(b);
+    if(!na || !nb) return false;
+    if(na === nb) return true;
+    const shorter = na.length <= nb.length ? na : nb;
+    const longer = na.length <= nb.length ? nb : na;
+    if(shorter.length < 12) return false; // too short to trust a prefix match
+    return longer.startsWith(shorter);
+  }
+  function findByFuzzyTitle(title, map){
+    // map: plain object keyed by normalizeTitle(title) -> value
+    const exact = map[normalizeTitle(title)];
+    if(exact) return exact;
+    const key = Object.keys(map).find(k => titlesMatch(k, title));
+    return key ? map[key] : undefined;
   }
   function splitDelimited(line){
     if(line.includes('\t')) return line.split('\t');
@@ -1019,8 +1039,7 @@
     return s !== '' && !TERMINAL_STATUSES.includes(s);
   };
   function promoStatusForVideo(title){
-    const norm = normalizeTitle(title);
-    const matches = promos.filter(p => normalizeTitle(p.video) === norm);
+    const matches = promos.filter(p => titlesMatch(p.video, title));
     if(!matches.length) return 'none';
     return matches.some(p => isPromoActive(p.status)) ? 'active' : 'ended';
   }
@@ -1113,9 +1132,18 @@
     if(myToken !== rollupRenderToken) return; // a newer render started while we were loading; abandon this one
     body.innerHTML = '';
     const groups = {};
+    // Promotions-tab titles are sometimes truncated by YouTube, so group
+    // lookups use fuzzy prefix matching instead of exact key equality —
+    // otherwise a truncated promo title and its full analytics title end up
+    // as two separate, unmerged rows (and the promo looks "missing").
+    function findGroupKey(title){
+      if(groups[title]) return title;
+      return Object.keys(groups).find(k => titlesMatch(k, title));
+    }
     promos.forEach(p => {
-      const key = (p.video || 'Untitled').trim();
-      if(!groups[key]) groups[key] = { video: key, cost:0, promoViews:0, subs:0, count:0, goals:{} };
+      const rawKey = (p.video || 'Untitled').trim();
+      let key = findGroupKey(rawKey);
+      if(!key){ key = rawKey; groups[key] = { video: key, cost:0, promoViews:0, subs:0, count:0, goals:{} }; }
       const g = groups[key];
       g.cost += Number(p.cost)||0;
       g.promoViews += Number(p.views)||0;
@@ -1125,10 +1153,17 @@
     });
     // Also surface videos that have analytics data but no promotions, so the merged view is complete
     Object.values(metricsMap).forEach(v => {
-      const key = v.title.trim();
-      const normKey = Object.keys(groups).find(k => normalizeTitle(k) === normalizeTitle(key));
-      if(!normKey && !groups[key]){
-        groups[key] = { video: key, cost:0, promoViews:0, subs:0, count:0, goals:{} };
+      const rawKey = v.title.trim();
+      const existingKey = findGroupKey(rawKey);
+      if(existingKey){
+        // Prefer the fuller (untruncated) title for display
+        if(existingKey !== rawKey && rawKey.length > existingKey.length){
+          groups[rawKey] = groups[existingKey];
+          groups[rawKey].video = rawKey;
+          delete groups[existingKey];
+        }
+      } else {
+        groups[rawKey] = { video: rawKey, cost:0, promoViews:0, subs:0, count:0, goals:{} };
       }
     });
     const rows = Object.values(groups);
@@ -1138,7 +1173,7 @@
     }
     rows.sort((a,b) => b.cost - a.cost);
     rows.forEach(g => {
-      const analytics = metricsMap[normalizeTitle(g.video)];
+      const analytics = findByFuzzyTitle(g.video, metricsMap);
       const totalViews = analytics && !isNaN(analytics.views) ? analytics.views : g.promoViews;
       const dominantGoal = Object.keys(g.goals).length
         ? Object.entries(g.goals).sort((a,b)=>b[1]-a[1])[0][0]
