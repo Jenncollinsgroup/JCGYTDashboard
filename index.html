@@ -1273,24 +1273,39 @@
     return records.length ? records : null;
   }
   function promoKey(p){
-    // Identity of a campaign — video + goal + cost. Deliberately excludes date
-    // (unreliable — see note below) AND excludes impressions/views/subs, since
-    // those keep growing for a promo that's still actively running, so two
-    // imports of the *same* campaign a week apart would otherwise look like
-    // different records and get duplicated instead of updated.
-    return [normalizeTitle(p.video), p.goal, Number(p.cost)||0].join('|');
+    // A "campaign" is identified by video + goal only. Cost, impressions,
+    // views, subs, and status all change over a campaign's life as YouTube
+    // moves it Pending -> Active -> Ended and its spend/stats accrue — none of
+    // that should create a new row, it should update the existing one.
+    return [normalizeTitle(p.video), p.goal].join('|');
+  }
+  // Header text that occasionally leaks into the video field when a row's
+  // cells shift during export (a known parsing artifact, not a real title).
+  const JUNK_TITLES = new Set(['promotion','video','title','status','goal']);
+  const STATUS_PRIORITY = { ended:3, active:2, pending:1, removed:0, rejected:0, declined:0 };
+  function statusPriority(status){
+    return STATUS_PRIORITY[String(status||'').trim().toLowerCase()] ?? 0;
+  }
+  function moreAuthoritative(a, b){
+    // Is `a` a better representation of a campaign's current true state than `b`?
+    // Ended beats Active beats Pending; ties broken by whichever has more data.
+    const pa = statusPriority(a.status), pb = statusPriority(b.status);
+    if(pa !== pb) return pa > pb;
+    const ca = (Number(a.impressions)||0)+(Number(a.views)||0)+(Number(a.subs)||0);
+    const cb = (Number(b.impressions)||0)+(Number(b.views)||0)+(Number(b.subs)||0);
+    return ca > cb;
   }
   function dedupePromos(list){
-    // Collapse to one row per campaign identity, keeping whichever row has the
-    // largest metrics (the most recently-updated numbers, since stats only grow).
+    // Collapse every lifecycle snapshot (Pending/Active/Ended rows for the same
+    // campaign, and any duplicates from re-importing) down to one row per
+    // campaign — whichever snapshot best represents its current true state —
+    // and drop rows whose title is just a parsing artifact.
     const byKey = new Map();
     list.forEach(p => {
+      if(JUNK_TITLES.has(normalizeTitle(p.video))) return;
       const key = promoKey(p);
       const existing = byKey.get(key);
-      if(!existing){ byKey.set(key, p); return; }
-      const bigger = (Number(p.impressions)||0) + (Number(p.views)||0) + (Number(p.subs)||0)
-        > (Number(existing.impressions)||0) + (Number(existing.views)||0) + (Number(existing.subs)||0);
-      if(bigger) byKey.set(key, p);
+      if(!existing || moreAuthoritative(p, existing)) byKey.set(key, p);
     });
     return Array.from(byKey.values());
   }
@@ -1299,22 +1314,21 @@
     promos.forEach((p, i) => byKey.set(promoKey(p), i));
     let added = 0, updated = 0;
     records.forEach(r => {
+      if(JUNK_TITLES.has(normalizeTitle(r.video))) return; // skip parsing artifacts
       const key = promoKey(r);
       const idx = byKey.get(key);
       if(idx === undefined){
         promos.push(r);
         byKey.set(key, promos.length - 1);
         added++;
-      } else {
-        // Same campaign seen before — refresh with the latest stats rather than
-        // adding a duplicate row (a still-running promo's numbers keep growing).
-        const existing = promos[idx];
-        existing.impressions = Number(r.impressions)||0;
-        existing.views = Number(r.views)||0;
-        existing.subs = Number(r.subs)||0;
-        if(r.status) existing.status = r.status;
-        if(r.date) existing.date = r.date;
+      } else if(moreAuthoritative(r, promos[idx])){
+        // Same campaign, and this snapshot is a better representation of its
+        // current state (e.g. it moved from Active to Ended) — replace it
+        // entirely rather than leaving the stale row alongside a new one.
+        promos[idx] = r;
         updated++;
+      } else {
+        updated++; // same campaign, but the stored row is already more current — skip
       }
     });
     await savePromos();
